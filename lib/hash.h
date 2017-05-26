@@ -37,9 +37,10 @@ mhash *hashadd(char *key, char *value) {
 
   if ((hp = hashfind(key)) == NULL) { /* not found */
     if ((hp = (mhash *) malloc(sizeof(*hp))) != NULL) {
+      hkey = hashpos(key);      
       hp->key = key;
       hp->value = value;
-       hkey = hashpos(key);      
+      hp->next = hash[hkey];
       hash[hkey] = hp;
     }
   } else /* Found item */ 
@@ -47,4 +48,19 @@ mhash *hashadd(char *key, char *value) {
        return NULL;
 
   return hp;
+}
+
+/* Remove value from Hash if there */
+mhash *hashremove(char *key) {
+  mhash *prev, *curr;
+  int hkey = hashpos(key);
+  int removed = 0;
+  for (prev = curr = hash[hkey]; curr != NULL; curr = curr->next) {
+    if (strcmp(key, curr->key) == 0) {
+      prev->next = curr->next;
+      free(curr);
+      removed = 1;                     
+    }
+  }
+  return 0;
 }
