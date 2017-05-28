@@ -25,8 +25,13 @@ int main() {
 
   // Get Manhattan Distance  
   for (i = 0; i < 3; i++) 
-    printf("manhattan_distance from you to friend %c: %d\n", c[i], manhattan_distance(you->value, users[i]->value, 4));
+    printf("Manhattan Distance from you to friend %c: %d\n", c[i], manhattan_distance(you->value, users[i]->value, 4));
+
+  printf("\n\n");
+
   // Get Euclidean Distance 
+  for (i =0; i < 3; i++)
+    printf("Euclidean Distance from you to friend %c: %d\n", c[i], euclidean_distance(you->value, users[i]->value, 4)); 
 
   return 0;
 }
