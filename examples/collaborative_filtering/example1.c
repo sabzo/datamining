@@ -10,7 +10,8 @@ int main() {
   mhash *users[] = {f1, f2, f3, you};
   char c[] = {'1', '2', '3'};
   const num = 3; // number of restaurants
-  char scores[][4] = {{2,4,4,4}, {1,4,3,3}, {4,5,5,5}, {4,5,4,4}};
+  const char max_ratings = 9;
+  char scores[][9] = {{2,4,4,0,1,5,0,0,3}, {0,0,3,3,2,0,2,0,4}, {3,0,5,5,0,3,4,5,3}, {4,5,0,4,0,0,2,5,4}};
 
   int i;
 
@@ -25,13 +26,13 @@ int main() {
 
   // Get Manhattan Distance  
   for (i = 0; i < 3; i++) 
-    printf("Manhattan Distance from you to friend %c: %d\n", c[i], manhattan_distance(you->value, users[i]->value, 4));
+    printf("Manhattan Distance from you to friend %c: %d\n", c[i], manhattan_distance(you->value, users[i]->value, max_ratings));
 
   printf("\n\n");
 
   // Get Euclidean Distance 
   for (i =0; i < 3; i++)
-    printf("Euclidean Distance from you to friend %c: %f\n", c[i], euclidean_distance(you->value, users[i]->value, 4)); 
+    printf("Euclidean Distance from you to friend %c: %f\n", c[i], euclidean_distance(you->value, users[i]->value, max_ratings)); 
 
   return 0;
 }
