@@ -1,10 +1,14 @@
+/* Example for determining Manhattan and Euclidean Distances between two users 
+The idea is the shorter distance between two users means the users have similar
+preferences */
+
 #include <stdio.h>
 #include "../../lib/lib.h"
 
 int main() {
 
-  mhash *f1, *f2, *f3, *you; // three friends and you
-  mhash *users[] = {f1, f2, f3, you};
+  user *f1, *f2, *f3, *you; // three friends and you
+  user *users[] = {f1, f2, f3, you};
   char c[] = {'1', '2', '3'};
   const num = 3; // number of restaurants
   const char max_ratings = 9;
