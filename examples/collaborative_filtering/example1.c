@@ -1,8 +1,5 @@
 #include <stdio.h>
-#include "../../lib/formulas.h"
-#include "../../lib/hash.h"
-
-void error_creating(char *name);
+#include "../../lib/lib.h"
 
 int main() {
 
@@ -35,9 +32,4 @@ int main() {
     printf("Euclidean Distance from you to friend %c: %f\n", c[i], euclidean_distance(you->value, users[i]->value, max_ratings)); 
 
   return 0;
-}
-
-void error_creating (char*name) {
-  printf("Error creating %s\n", name);
-  exit(1);
 }
