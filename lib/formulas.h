@@ -11,10 +11,11 @@ short manhattan_distance(char *user1, char *user2, short size) {
 }
 
 /* Euclidean Distance */
-short euclidean_distance(char *user1, char *user2, short size) {
+float euclidean_distance(char *user1, char *user2, short size) {
   int i = 0;
-  short score = 0;
-  while (i++ < size)
+  float score = 0.0;
+  while (i++ < size) {
     score += pow(*user1++ - *user2++, 2);      
+  }
   return sqrt(score);
 }
