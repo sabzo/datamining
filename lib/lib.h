@@ -5,13 +5,13 @@
 
 typedef struct user { 
   char *key;
-  char *value;
+  struct rating *value; // array of ratings
   struct user *next;
 } user;
 
 typedef struct rating {
   char *key;
-  short score;
+  float score;
 } rating;
   
 struct user *hash[HASHSIZE];
@@ -36,7 +36,7 @@ user *hashfind(char *key) {
 
 /* add to hashtable */
 /* ideally type of value should be void/anything */
-user *hashadd(char *key, char *value) {
+user *hashadd(char *key, rating *value) {
   user *hp;
   unsigned int hpos;
   int hkey;
@@ -72,28 +72,29 @@ user *hashremove(char *key) {
 }
 
 /* Manhattan Distance |x1-x2| + |y1-y2|*/
-short manhattan_distance(char *user1, char *user2, short size) {
+short manhattan_distance(rating *r1, rating *r2) {
   int i = 0;
   short score = 0;
-  while (i++ < size) {
+  while (r1 != NULL && r2 != NULL) {
+    if (strcmp(r1->key, r2->key) == 0) {
   // if there are no corresponding values -- indicated by 0 skip score addition
-    if (*user1 != 0 && *user2 != 0)
-      score += abs(*user1 - *user2);
-    user1++; 
-    user2++;
+      score += abs(r1->score - r2->score);
+      r1++;
+      r2++;
+    }
   }
   return score;
 }
 
 /* Euclidean Distance */
-float euclidean_distance(char *user1, char *user2, short size) {
-  int i = 0;
+float euclidean_distance(rating *r1, rating *r2) {
   float score = 0.0;
-  while (i++ < size) {
-    if (*user1 != 0 && *user2 != 0)
-      score += pow(*user1 - *user2, 2);      
-    user1++;
-    user2++;
+  while (r1 != NULL && r2 != NULL) {
+    if (strcmp(r1->key, r2->key) == 0) {
+      score += pow(r1->score - r2->score, 2);     
+      r1++;
+      r2++;
+    }
   }
   return sqrt(score);
 }
