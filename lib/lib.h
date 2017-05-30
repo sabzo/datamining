@@ -78,9 +78,7 @@ short manhattan_distance(rating *r1, rating *r2) {
   while ( r1 != NULL && r1->key != NULL && r2 != NULL && r2->key != NULL) {
     if (strcmp(r1->key, r2->key) == 0) {
   // if there are no corresponding values -- indicated by 0 skip score addition
-      score += abs(r1->score - r2->score);
-      r1++;
-      r2++;
+      score += abs((r1++)->score - (r2++)->score);
     }
   }
   return score;
@@ -91,9 +89,7 @@ float euclidean_distance(rating *r1, rating *r2) {
   float score = 0.0;
   while ( r1 != NULL && r1->key != NULL && r2 != NULL && r2->key != NULL) {
     if (strcmp(r1->key, r2->key) == 0) {
-      score += pow(r1->score - r2->score, 2);     
-      r1++;
-      r2++;
+      score += pow((r1++)->score - (r2++)->score, 2);     
     }
   }
   return sqrt(score);
