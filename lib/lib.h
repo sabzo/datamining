@@ -75,7 +75,7 @@ user *hashremove(char *key) {
 short manhattan_distance(rating *r1, rating *r2) {
   int i = 0;
   short score = 0;
-  while (r1 != NULL && r2 != NULL) {
+  while ( r1 != NULL && r1->key != NULL && r2 != NULL && r2->key != NULL) {
     if (strcmp(r1->key, r2->key) == 0) {
   // if there are no corresponding values -- indicated by 0 skip score addition
       score += abs(r1->score - r2->score);
@@ -89,7 +89,7 @@ short manhattan_distance(rating *r1, rating *r2) {
 /* Euclidean Distance */
 float euclidean_distance(rating *r1, rating *r2) {
   float score = 0.0;
-  while (r1 != NULL && r2 != NULL) {
+  while ( r1 != NULL && r1->key != NULL && r2 != NULL && r2->key != NULL) {
     if (strcmp(r1->key, r2->key) == 0) {
       score += pow(r1->score - r2->score, 2);     
       r1++;
