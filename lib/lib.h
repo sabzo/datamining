@@ -1,14 +1,20 @@
 #include <string.h>
 #include <stdlib.h>
+#include <math.h>
 #define HASHSIZE 101
 
-typedef struct hash {
+typedef struct user { 
   char *key;
-  char *value;
-  struct hash *next;
-} mhash;
+  struct rating *value; // array of ratings
+  struct user *next;
+} user;
 
-struct hash *hash[HASHSIZE];
+typedef struct rating {
+  char *key;
+  float score;
+} rating;
+  
+struct user *hash[HASHSIZE];
 
 /* Hash Algorithm from K&R */
 unsigned int hashpos(char *name) {
@@ -20,8 +26,8 @@ unsigned int hashpos(char *name) {
 }
 
 /* Lookup Obj */
-mhash *hashfind(char *key) {
-  struct hash *hp;
+user *hashfind(char *key) {
+  struct user *hp;
   for (hp = hash[hashpos(key)]; hp != NULL; hp = hp->next)
     if (strcmp(key, hp->key) == 0)
       return hp;
@@ -30,13 +36,13 @@ mhash *hashfind(char *key) {
 
 /* add to hashtable */
 /* ideally type of value should be void/anything */
-mhash *hashadd(char *key, char *value) {
-  mhash *hp;
+user *hashadd(char *key, rating *value) {
+  user *hp;
   unsigned int hpos;
   int hkey;
 
   if ((hp = hashfind(key)) == NULL) { /* not found */
-    if ((hp = (mhash *) malloc(sizeof(*hp))) != NULL) {
+    if ((hp = (user *) malloc(sizeof(*hp))) != NULL) {
       hkey = hashpos(key);      
       hp->key = key;
       hp->value = value;
@@ -51,8 +57,8 @@ mhash *hashadd(char *key, char *value) {
 }
 
 /* Remove value from Hash if there */
-mhash *hashremove(char *key) {
-  mhash *prev, *curr;
+user *hashremove(char *key) {
+  user *prev, *curr;
   int hkey = hashpos(key);
   int removed = 0;
   for (prev = curr = hash[hkey]; curr != NULL; curr = curr->next) {
@@ -63,4 +69,30 @@ mhash *hashremove(char *key) {
     }
   }
   return 0;
+}
+
+/* Manhattan Distance |x1-x2| + |y1-y2|*/
+short manhattan_distance(rating *r1, rating *r2) {
+  int i = 0;
+  short score = 0;
+  while ( r1 != NULL && r1->key != NULL && r2 != NULL && r2->key != NULL) 
+    if (strcmp(r1->key, r2->key) == 0) 
+      score += abs((r1++)->score - (r2++)->score);
+
+  return score;
+}
+
+/* Euclidean Distance */
+float euclidean_distance(rating *r1, rating *r2) {
+  float score = 0.0;
+  while ( r1 != NULL && r1->key != NULL && r2 != NULL && r2->key != NULL) 
+    if (strcmp(r1->key, r2->key) == 0) 
+      score += pow((r1++)->score - (r2++)->score, 2);     
+  
+  return sqrt(score);
+}
+
+void error_creating (char*name) {
+  printf("Error creating %s\n", name);
+  exit(1);
 }
