@@ -1,18 +1,34 @@
 #include <string.h>
 #include <stdlib.h>
 #include <math.h>
+#include <stdio.h>
 #define HASHSIZE 101
+#define MAXMOVIES 100
 
-typedef struct user { 
+// Create a Custom Hahs Type
+#define HASH(name, type_key, type_next, type_obj, size) \
+  typedef struct name { \
+    type_key key; \
+    type_obj value; \
+    type_next *next; \
+  } name; \
+  type_next *_##name##_hash[HASHSIZE];\
+  type_next hash_##name##_add (type_key hash, type_key key, type_obj obj) { \
+    type_next test; \
+    return test; \
+  }
+
+typedef struct distance {
   char *key;
-  struct rating *value; // array of ratings
-  struct user *next;
-} user;
+  float distance;
+} distance;
 
 typedef struct rating {
   char *key;
   float score;
 } rating;
+
+HASH(user, char *, struct user, rating *, HASHSIZE)
   
 struct user *hash[HASHSIZE];
 
@@ -91,6 +107,16 @@ float euclidean_distance(rating *r1, rating *r2) {
   
   return sqrt(score);
 }
+
+/*
+int in_array(rating target, rating *ratings) {
+  int i = 0;
+  while(*(ratings + i) != NULL) 
+    if ((strcmp(target->key, (ratings + i)->key) == 0))
+     return 1;
+   return 0;
+}
+*/
 
 void error_creating (char*name) {
   printf("Error creating %s\n", name);
