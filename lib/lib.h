@@ -12,14 +12,13 @@
 #define HASH(name, type_key, type_next, type_obj, size) \
   typedef struct name { \
     type_key key; \
-    type_obj value; \
+    type_obj value[MAXMOVIES]; \
+    char v_it; /*value array position iterator */ \
     type_next *next; \
   } name; \
   type_next *_##name##_hash[HASHSIZE];\
-  type_next hash_##name##_add (type_key hash, type_key key, type_obj obj) { \
-    type_next test; \
-    return test; \
-  } \
+ \
+/* Get position in Hash array based on key */ \
 unsigned int _##name##_hashpos(type_key _name) { \
   unsigned hashval = 0; \
   char c; \
@@ -27,6 +26,7 @@ unsigned int _##name##_hashpos(type_key _name) { \
     hashval = c + 31 * hashval; \
   return hashval % HASHSIZE; \
 } \
+  /* Find the object if it exists in the hash */ \
 type_next *_##name##_find(type_key key) { \
   type_next *hp; \
   for (hp = _##name##_hash[_##name##_hashpos(key)]; hp != NULL; hp = hp->next) \
@@ -34,24 +34,27 @@ type_next *_##name##_find(type_key key) { \
       return hp; \
     return NULL; \
 } \
+  /* Add a new object to Hash. If it exists append its value array */ \
 type_next *_##name##_add(type_key key, type_obj value) { \
-  user *hp; \
+  name *hp; \
   unsigned int hpos; \
   int hkey; \
-  \
   if ((hp = _##name##_find(key)) == NULL) { /* not found */ \
-    if ((hp = (user *) malloc(sizeof(*hp))) != NULL) { \
+    if ((hp = (name *) malloc(sizeof(*hp))) != NULL) { \
       hkey = _##name##_hashpos(key); \
       hp->key = key; \
-      hp->value = value; \
+      hp->v_it = 0; /* the value array is now initialized with 1 object */ \
+      hp->value[hp->v_it++] = value; \
       hp->next = _##name##_hash[hkey]; \
       _##name##_hash[hkey] = hp; \
     }\
-  } else /* Found item */ \
-     if((hp->value = value) == NULL) \
-       return NULL; \
+  } else {/* Found item */ \
+    if (hp->v_it < MAXMOVIES - 1) \
+      hp->value[hp->v_it++] = value; \
+  } \
   return hp; \
 } \
+  /* Remove an Object from the hash */ \
 type_next *_##name##_remove(type_key key) { \
   name *prev, *curr; \
   int hkey = _##name##_hashpos(key); \
@@ -65,6 +68,7 @@ type_next *_##name##_remove(type_key key) { \
   } \
   return 0; \
 }
+
 typedef struct distance {
   char *key;
   float distance;
@@ -75,22 +79,8 @@ typedef struct rating {
   float score;
 } rating;
 
-HASH(user, char *, struct user, rating *, HASHSIZE)
+HASH(user, char *, struct user, rating, HASHSIZE)
 //HASH(love, char *, struct love, rating*, HASHSIZE)  
-struct user *hash[HASHSIZE];
-
-/* Hash Algorithm from K&R */
-
-
-/* Lookup Obj */
-
-
-/* add to hashtable */
-/* ideally type of value should be void/anything */
-
-
-/* Remove value from Hash if there */
-
 
 /* Manhattan Distance |x1-x2| + |y1-y2|*/
 short manhattan_distance(rating *r1, rating *r2) {
