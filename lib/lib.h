@@ -19,8 +19,52 @@
   type_next hash_##name##_add (type_key hash, type_key key, type_obj obj) { \
     type_next test; \
     return test; \
-  }
-
+  } \
+unsigned int _##name##_hashpos(type_key _name) { \
+  unsigned hashval = 0; \
+  char c; \
+  while ((c = *_name++) != '\0') \
+    hashval = c + 31 * hashval; \
+  return hashval % HASHSIZE; \
+} \
+type_next *_##name##_find(type_key key) { \
+  type_next *hp; \
+  for (hp = _##name##_hash[_##name##_hashpos(key)]; hp != NULL; hp = hp->next) \
+    if (strcmp(key, hp->key) == 0) \
+      return hp; \
+    return NULL; \
+} \
+type_next *_##name##_add(type_key key, type_obj value) { \
+  user *hp; \
+  unsigned int hpos; \
+  int hkey; \
+  \
+  if ((hp = _##name##_find(key)) == NULL) { /* not found */ \
+    if ((hp = (user *) malloc(sizeof(*hp))) != NULL) { \
+      hkey = _##name##_hashpos(key); \
+      hp->key = key; \
+      hp->value = value; \
+      hp->next = _##name##_hash[hkey]; \
+      _##name##_hash[hkey] = hp; \
+    }\
+  } else /* Found item */ \
+     if((hp->value = value) == NULL) \
+       return NULL; \
+  return hp; \
+} \
+type_next *_##name##_remove(type_key key) { \
+  name *prev, *curr; \
+  int hkey = _##name##_hashpos(key); \
+  int removed = 0; \
+  for (prev = curr = _##name##_hash[hkey]; curr != NULL; curr = curr->next) { \
+    if (strcmp(key, curr->key) == 0) { \
+      prev->next = curr->next; \
+      free(curr); \
+      removed = 1; \
+    } \
+  } \
+  return 0; \
+}
 typedef struct distance {
   char *key;
   float distance;
@@ -32,63 +76,21 @@ typedef struct rating {
 } rating;
 
 HASH(user, char *, struct user, rating *, HASHSIZE)
-  
+//HASH(love, char *, struct love, rating*, HASHSIZE)  
 struct user *hash[HASHSIZE];
 
 /* Hash Algorithm from K&R */
-unsigned int hashpos(char *name) {
-  unsigned hashval = 0;
-  char c;
-  while ((c = *name++) != '\0')
-    hashval = c + 31 * hashval;
-  return hashval % HASHSIZE;
-}
+
 
 /* Lookup Obj */
-user *hashfind(char *key) {
-  struct user *hp;
-  for (hp = hash[hashpos(key)]; hp != NULL; hp = hp->next)
-    if (strcmp(key, hp->key) == 0)
-      return hp;
-    return NULL;
-}
+
 
 /* add to hashtable */
 /* ideally type of value should be void/anything */
-user *hashadd(char *key, rating *value) {
-  user *hp;
-  unsigned int hpos;
-  int hkey;
 
-  if ((hp = hashfind(key)) == NULL) { /* not found */
-    if ((hp = (user *) malloc(sizeof(*hp))) != NULL) {
-      hkey = hashpos(key);      
-      hp->key = key;
-      hp->value = value;
-      hp->next = hash[hkey];
-      hash[hkey] = hp;
-    }
-  } else /* Found item */ 
-     if((hp->value = value) == NULL) 
-       return NULL;
-
-  return hp;
-}
 
 /* Remove value from Hash if there */
-user *hashremove(char *key) {
-  user *prev, *curr;
-  int hkey = hashpos(key);
-  int removed = 0;
-  for (prev = curr = hash[hkey]; curr != NULL; curr = curr->next) {
-    if (strcmp(key, curr->key) == 0) {
-      prev->next = curr->next;
-      free(curr);
-      removed = 1;                     
-    }
-  }
-  return 0;
-}
+
 
 /* Manhattan Distance |x1-x2| + |y1-y2|*/
 short manhattan_distance(rating *r1, rating *r2) {

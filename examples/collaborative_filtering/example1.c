@@ -23,11 +23,11 @@ int main() {
 
   // Add scores for 3 friends
   for (i = 0; i < 3; i++)
-    if ((users[i] = hashadd("friend" + c[i], scores[i])) == NULL) 
+    if ((users[i] = _user_add("friend" + c[i], scores[i])) == NULL) 
     error_creating("user");
 
   // Add scores for userr 
-  if ((you = hashadd("you", scores[3])) == NULL) 
+  if ((you = _user_add("you", scores[3])) == NULL) 
     error_creating("user: you"); 
 
   // Get Manhattan Distance  
