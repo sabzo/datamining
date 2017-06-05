@@ -5,6 +5,8 @@ preferences */
 #include <stdio.h>
 #include "../../lib/lib.h"
 
+// Create Hash, from macro expansion, for storing users and their ratings
+HASH(user, char *, struct user, rating, HASHSIZE)
 int main() {
 
   user *f1, *f2, *f3, *you; // three friends and you

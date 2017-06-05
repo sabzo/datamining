@@ -5,7 +5,7 @@
 #include <stdio.h>
 #define HASHSIZE 101
 #define MAXMOVIES 100
-#define LINESIZE 1000
+#define MAXLINE 1000
 #define MAXLINEWORDS 20
 
 // Create a Custom Hahs Type
@@ -79,7 +79,6 @@ typedef struct rating {
   float score;
 } rating;
 
-HASH(user, char *, struct user, rating, HASHSIZE)
 //HASH(love, char *, struct love, rating*, HASHSIZE)  
 
 /* Manhattan Distance |x1-x2| + |y1-y2|*/
@@ -118,6 +117,11 @@ void error_creating (char*name) {
   exit(1);
 }
 
+void error (char *msg) {
+  printf("%s\n", msg);
+  exit(1);
+}
+
 void usage(char *progname) {
   printf("Usage: %s <ratings csv file> \n", progname);
   exit(0);
@@ -125,10 +129,10 @@ void usage(char *progname) {
 
 int get_num_lines(char *filename) {
   FILE *fp;
-  char line[LINESIZE];
+  char line[MAXLINE];
   int count = 0;
   if ((fp = fopen(filename, "r")) != NULL) 
-    while (fgets(line, LINESIZE, fp) != NULL)
+    while (fgets(line, MAXLINE, fp) != NULL)
       count++;  
   return count;
 }
