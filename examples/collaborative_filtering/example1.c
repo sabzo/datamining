@@ -20,15 +20,18 @@ int main() {
  // char scores[][9] = {{2,4,4,0,1,5,0,0,3}, {0,0,3,3,2,0,2,0,4}, {3,0,5,5,0,3,4,5,3}, {4,5,0,4,0,0,2,5,4}};
 
   int i;
+  int j;
 
   // Add scores for 3 friends
   for (i = 0; i < 3; i++)
-    if ((users[i] = hashadd("friend" + c[i], scores[i])) == NULL) 
-    error_creating("user");
+    for (j = 0; j < 4; j++) 
+      if ((users[i] = _user_add("friend" + c[i], scores[i][j])) == NULL) 
+        error_creating("user");
 
   // Add scores for userr 
-  if ((you = hashadd("you", scores[3])) == NULL) 
-    error_creating("user: you"); 
+  for (j = 0; j < 4; j++)
+    if ((you = _user_add("you", scores[3][j])) == NULL) 
+      error_creating("user: you"); 
 
   // Get Manhattan Distance  
   for (i = 0; i < 3; i++) 
