@@ -7,7 +7,7 @@
 #define MAXMOVIES 100
 #define MAXLINE 1000
 #define MAXLINEWORDS 20
-
+#define UIDSIZE 4
 // Create a Custom Hahs Type
 #define HASH(name, type_key, type_next, type_obj, size) \
   typedef struct name { \

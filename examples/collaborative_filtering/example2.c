@@ -13,9 +13,14 @@ int main(int argc, char *argv[]) {
   FILE *fp;
   char line[MAXLINE]; // each line
   char *filename; 
-  user *u1;
+  char *uid = NULL; // user id 
+  user *u;
+
   if (argc < 2)
     usage(argv[0]);
+  // Get userID from commandline
+  if (argc == 3)
+    uid = argv[2];
 
    // Open ratings file
    filename = argv[1];
@@ -33,15 +38,25 @@ int main(int argc, char *argv[]) {
        // printf("User %s, title: %s, rating: %s\n", uid, title, _rating);
        _user_add(uid, r);
    }
-  
-   // Get ratings for a User
-   if ((u1 = _user_find("1")) != NULL) {
-     int i;
-     for (i = 0; i < u1->v_it; i++) {
-       rating r = u1->value[i];
-       printf("movie: %s, rating: %f\n", r.key, r.score);
-     }
-  }   
 
+   // Allow user to choose a userID
+   if (uid == NULL) {
+     int i = 0;
+     printf("Enter a user id to find ratings\n");
+     uid = calloc(UIDSIZE + 1, sizeof(char)); // +1 for \0 
+     while (i < UIDSIZE && (uid[i] = getc(stdin)) != '\n') 
+       i++; 
+     uid[i] = '\0';
+     printf("uid: %s\n", uid);
+    } 
+ 
+   // Get ratings for a user
+   if ((u = _user_find(uid)) != NULL) {
+       int i;
+       for (i = 0; i < u->v_it; i++) {
+         rating r = u->value[i];
+         printf("movie: %s, rating: %f\n", r.key, r.score);
+       }
+    }  
    return 0;
 }
