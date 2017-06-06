@@ -12,7 +12,7 @@ int main() {
   user *f1, *f2, *f3, *you; // three friends and you
   user *users[] = {f1, f2, f3, you};
   char c[] = {'1', '2', '3'};
-  const num = 3; // number of restaurants
+  const int num = 3; // number of restaurants
   rating f1r[] = {{"Blues Traveler", 3.5}, {"Broken Bells",1.0}, {"Norah Jones", 1.5},{"Phoenix", 5.0}, NULL};
   rating f2r[] = {{"Blues Traveler", 1.5}, {"Broken Bells",2.0}, {"Norah Jones", 2.0},{"Phoenix", 5.0}, NULL};
   rating f3r[] = {{"Blues Traveler", 0.5}, {"Broken Bells",3.0}, {"Norah Jones", 3.0},{"Phoenix", 3.0}, NULL};

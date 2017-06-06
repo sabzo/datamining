@@ -4,7 +4,7 @@
 #include <math.h>
 #include <stdio.h>
 #define HASHSIZE 101
-#define MAXMOVIES 100
+#define MAXVALUES 100
 #define MAXLINE 1000
 #define MAXLINEWORDS 20
 #define UIDSIZE 4
@@ -12,7 +12,7 @@
 #define HASH(name, type_key, type_next, type_obj, size) \
   typedef struct name { \
     type_key key; \
-    type_obj value[MAXMOVIES]; \
+    type_obj *value; \
     char v_it; /*value array position iterator */ \
     type_next *next; \
   } name; \
@@ -44,12 +44,13 @@ type_next *_##name##_add(type_key key, type_obj value) { \
       hkey = _##name##_hashpos(key); \
       hp->key = key; \
       hp->v_it = 0; /* the value array is now initialized with 1 object */ \
+      hp->value = calloc(MAXVALUES + 1, sizeof(type_obj)); /* zero fill + 1 off to use as sentinel */\
       hp->value[hp->v_it++] = value; \
       hp->next = _##name##_hash[hkey]; \
       _##name##_hash[hkey] = hp; \
     }\
   } else {/* Found item */ \
-    if (hp->v_it < MAXMOVIES - 1) \
+    if (hp->v_it < MAXVALUES) \
       hp->value[hp->v_it++] = value; \
   } \
   return hp; \
@@ -79,16 +80,25 @@ typedef struct rating {
   float score;
 } rating;
 
-//HASH(love, char *, struct love, rating*, HASHSIZE)  
+// Searches for a value in specified array
+// TODO Better implementation would be to use a HASH but at moment not interested
+int in_rating_array(rating target, rating *ratings) {
+  int i = 0;
+  while (ratings != NULL && (ratings++)->key != NULL)
+    if ((strcmp(target.key, ratings->key) == 0))
+      return i;
+    i++;    
+   return -1;
+}
 
 /* Manhattan Distance |x1-x2| + |y1-y2|*/
 short manhattan_distance(rating *r1, rating *r2) {
   int i = 0;
   short score = 0;
-  while ( r1 != NULL && r1->key != NULL && r2 != NULL && r2->key != NULL) 
-    if (strcmp(r1->key, r2->key) == 0) 
-      score += fabs((r1++)->score - (r2++)->score);
-
+  int pos = 0;
+  while (r1 != NULL && r1->key != NULL && r2 != NULL && r2->key != NULL) 
+    if ((pos = in_rating_array(*r1, r2)) != -1) 
+      score += fabs(r1++->score - (r2 + pos)->score);
   return score;
 }
 
@@ -101,16 +111,6 @@ float euclidean_distance(rating *r1, rating *r2) {
   
   return sqrt(score);
 }
-
-/*
-int in_array(rating target, rating *ratings) {
-  int i = 0;
-  while(*(ratings + i) != NULL) 
-    if ((strcmp(target->key, (ratings + i)->key) == 0))
-     return 1;
-   return 0;
-}
-*/
 
 void error_creating (char*name) {
   printf("Error creating %s\n", name);
