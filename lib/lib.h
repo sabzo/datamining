@@ -84,11 +84,12 @@ typedef struct rating {
 // TODO Better implementation would be to use a HASH but at moment not interested
 int in_rating_array(rating target, rating *ratings) {
   int i = 0;
-  while (ratings != NULL && (ratings++)->key != NULL)
-    if ((strcmp(target.key, ratings->key) == 0))
+  while (ratings != NULL && ratings->key != NULL) {
+    if ((strcmp(target.key, ratings++->key) == 0))
       return i;
     i++;    
-   return -1;
+  }
+  return -1;
 }
 
 /* Manhattan Distance |x1-x2| + |y1-y2|*/
@@ -105,9 +106,11 @@ short manhattan_distance(rating *r1, rating *r2) {
 /* Euclidean Distance */
 float euclidean_distance(rating *r1, rating *r2) {
   float score = 0.0;
+  int i = 0;
+  int pos = 0;
   while ( r1 != NULL && r1->key != NULL && r2 != NULL && r2->key != NULL) 
-    if (strcmp(r1->key, r2->key) == 0) 
-      score += pow((r1++)->score - (r2++)->score, 2);     
+    if ((pos = in_rating_array(*r1, r2)) != -1) 
+      score += pow(r1++->score - (r2 + pos)->score, 2);     
   
   return sqrt(score);
 }
