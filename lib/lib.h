@@ -6,6 +6,7 @@
 #define HASHSIZE 101
 #define MAXVALUES 100
 #define MAXLINE 1000
+#define MAXDISTANCES 1000
 #define MAXLINEWORDS 20
 #define UIDSIZE 4
 // Create a Custom Hahs Type

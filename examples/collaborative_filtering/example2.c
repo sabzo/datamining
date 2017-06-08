@@ -8,6 +8,16 @@ preferences */
 // Create Hash, from macro expansion, for storing users and their ratings
 HASH(user, char *, struct user, rating, HASHSIZE)
 // Get nearby users
+int distance_compare(distance *d1, distance *d2) {
+  int eq;
+  if (d1->distance == d2->distance)
+    eq = 0;
+  else if (d1->distance < d2->distance)
+    eq = -1;
+  else
+    return 1;
+}
+
 // Returns number of nearby users calculated as near
 int nearby_users(user *u, distance *users, int len) {
   int num_users = 0;
@@ -28,6 +38,7 @@ int nearby_users(user *u, distance *users, int len) {
     ttmp++;
     i++; 
   }
+  qsort(users, num_users, sizeof(distance), (int (*)(const void *, const void *)) distance_compare);
   return num_users;
 }
 
@@ -38,7 +49,7 @@ int main(int argc, char *argv[]) {
   char *filename; 
   char *uid = NULL; // user id 
   user *u;
-  distance distances[10000];
+  distance distances[MAXDISTANCES];
   int total_distances;
 
   if (argc < 2)
@@ -86,7 +97,7 @@ int main(int argc, char *argv[]) {
    
    // Get nearby users
     //int nearby_users(user *u, distance *users, int len) {
-  total_distances = nearby_users(u, distances, 10000);  
+   total_distances = nearby_users(u, distances, MAXDISTANCES);  
    printf("total distances: %d\n", total_distances);  
    return 0;
 }
