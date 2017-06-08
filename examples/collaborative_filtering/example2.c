@@ -7,6 +7,29 @@ preferences */
  
 // Create Hash, from macro expansion, for storing users and their ratings
 HASH(user, char *, struct user, rating, HASHSIZE)
+// Get nearby users
+// Returns number of nearby users calculated as near
+int nearby_users(user *u, distance *users, int len) {
+  int num_users = 0;
+  int i = 0;
+  int total = 0;
+  user **ttmp = _user_hash;
+  // parse through users calculating distance
+  while (i < HASHSIZE) {   
+    user *tmp = (*ttmp);
+    while (tmp && tmp->key != NULL && total < len) { 
+      distance d = {tmp->key, euclidean_distance(u->value, tmp->value)};
+      if (d.distance) {
+        users[total++] = d;
+        num_users++;
+      }
+      tmp = tmp->next;
+    }
+    ttmp++;
+    i++; 
+  }
+  return num_users;
+}
 
 int main(int argc, char *argv[]) {
 
@@ -15,6 +38,8 @@ int main(int argc, char *argv[]) {
   char *filename; 
   char *uid = NULL; // user id 
   user *u;
+  distance distances[10000];
+  int total_distances;
 
   if (argc < 2)
     usage(argv[0]);
@@ -58,5 +83,10 @@ int main(int argc, char *argv[]) {
          printf("movie: %s, rating: %f\n", r.key, r.score);
        }
     }  
+   
+   // Get nearby users
+    //int nearby_users(user *u, distance *users, int len) {
+  total_distances = nearby_users(u, distances, 10000);  
+   printf("total distances: %d\n", total_distances);  
    return 0;
 }

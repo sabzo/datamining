@@ -9,7 +9,7 @@
 #define MAXLINEWORDS 20
 #define UIDSIZE 4
 // Create a Custom Hahs Type
-#define HASH(name, type_key, type_next, type_obj, size) \
+#define HASH(name, type_key, type_next, type_obj, size)  \
   typedef struct name { \
     type_key key; \
     type_obj *value; \
@@ -97,9 +97,11 @@ short manhattan_distance(rating *r1, rating *r2) {
   int i = 0;
   short score = 0;
   int pos = 0;
-  while (r1 != NULL && r1->key != NULL && r2 != NULL && r2->key != NULL) 
+  while (r1 != NULL && r1->key != NULL && r2 != NULL && r2->key != NULL) { 
     if ((pos = in_rating_array(*r1, r2)) != -1) 
-      score += fabs(r1++->score - (r2 + pos)->score);
+      score += fabs(r1->score - (r2 + pos)->score);
+    r1++;
+  }
   return score;
 }
 
@@ -108,10 +110,11 @@ float euclidean_distance(rating *r1, rating *r2) {
   float score = 0.0;
   int i = 0;
   int pos = 0;
-  while ( r1 != NULL && r1->key != NULL && r2 != NULL && r2->key != NULL) 
+  while ( r1 != NULL && r1->key != NULL && r2 != NULL && r2->key != NULL) { 
     if ((pos = in_rating_array(*r1, r2)) != -1) 
-      score += pow(r1++->score - (r2 + pos)->score, 2);     
-  
+      score += pow(r1->score - (r2 + pos)->score, 2);     
+    r1++;
+  }
   return sqrt(score);
 }
 
