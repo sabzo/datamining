@@ -19,26 +19,25 @@ int distance_compare(distance *d1, distance *d2) {
 }
 
 // Returns number of nearby users calculated as near
-int nearby_users(user *u, distance *users, int len) {
+int nearby_users(distance *ud, const user *u, user **users, int len) {
   int num_users = 0;
   int i = 0;
   int total = 0;
-  user **ttmp = _user_hash;
   // parse through users calculating distance
   while (i < HASHSIZE) {   
-    user *tmp = (*ttmp);
+    const user *tmp = (*users);
     while (tmp && tmp->key != NULL && total < len) { 
       distance d = {tmp->key, euclidean_distance(u->value, tmp->value)};
       if (d.distance) {
-        users[total++] = d;
+        ud[total++] = d;
         num_users++;
       }
       tmp = tmp->next;
     }
-    ttmp++;
+    users++;
     i++; 
   }
-  qsort(users, num_users, sizeof(distance), (int (*)(const void *, const void *)) distance_compare);
+  qsort(ud, num_users, sizeof(distance), (int (*)(const void *, const void *)) distance_compare);
   return num_users;
 }
 
@@ -51,6 +50,7 @@ int main(int argc, char *argv[]) {
   user *u;
   distance distances[MAXDISTANCES];
   int total_distances;
+  char **results[MAXRECOMMENDATIONS];
 
   if (argc < 2)
     usage(argv[0]);
@@ -97,7 +97,8 @@ int main(int argc, char *argv[]) {
    
    // Get nearby users
     //int nearby_users(user *u, distance *users, int len) {
-   total_distances = nearby_users(u, distances, MAXDISTANCES);  
+   total_distances = nearby_users(distances, u, _user_hash, MAXDISTANCES);  
    printf("total distances: %d\n", total_distances);  
+   
    return 0;
 }
