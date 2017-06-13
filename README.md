@@ -18,6 +18,7 @@ Implement Datamining Algorithms described in [Guide to Data Mining] (http://guid
 
 # References
  - [Guide to Data Mining] (http://guidetodatamining.com/)
+ - Algorithms of the Intelligent Web
 
 ## License
 
