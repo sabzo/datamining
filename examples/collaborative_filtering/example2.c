@@ -15,7 +15,8 @@ int distance_compare(distance *d1, distance *d2) {
   else if (d1->distance < d2->distance)
     eq = -1;
   else
-    return 1;
+    eq = 1;
+  return eq;
 }
 
 /* Rating comparison function: greatest to lowest */
@@ -25,8 +26,9 @@ int rating_compare(const rating *r1, const rating *r2) {
     eq = 0;
   else if (r1->score < r2->score)
     eq = 1;
-  else 
-    return -1;
+  else
+    eq = -1;
+  return eq;
 }
 
 // TODO struct rec_args {
