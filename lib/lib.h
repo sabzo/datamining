@@ -198,7 +198,7 @@ char ** delim(char *str, char delim) {
   - elements are elements needing to be ranked.
 */
 
-void recommend(void *result, const void *this, const void **that, const int len_that, void *heuristic, void (*similarity)(void *result, const void *this, const void *that, const int len_that), void (*rank)(const void *heuristic, void *result)) {
+void recommend(void *result, void *this, const void **that, int len_that, const void *heuristic, void (*similarity)(void *result, void *this, void *that, int len_that), void (*rank)(const void *heuristic, void *result)) {
   // Get similar items
   similarity(result, this, that, len_that); 
   // rank results

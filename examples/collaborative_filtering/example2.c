@@ -17,8 +17,14 @@ int distance_compare(distance *d1, distance *d2) {
   else
     return 1;
 }
-
+// TODO struct rec_args {
+  // args
+  
 // Returns number of nearby users calculated as near
+
+
+typedef int (*fnptr_t) (int a, const char *b);
+
 int nearby_users(distance *ud, const user *u, user **users, int len) {
   int num_users = 0;
   int i = 0;
@@ -41,6 +47,8 @@ int nearby_users(distance *ud, const user *u, user **users, int len) {
   return num_users;
 }
 
+void rank (void *heuristic, distance *d) {
+}
 int main(int argc, char *argv[]) {
 
   FILE *fp;
@@ -95,10 +103,6 @@ int main(int argc, char *argv[]) {
        }
     }  
    
-   // Get nearby users
-    //int nearby_users(user *u, distance *users, int len) {
-   total_distances = nearby_users(distances, u, _user_hash, MAXDISTANCES);  
-   printf("total distances: %d\n", total_distances);  
-   
+   recommend(distances, u, (const void **) _user_hash, MAXDISTANCES, (const void*) u, (void (*)(void *, void *, void *, int)) nearby_users, (void (*)(const void *, void *)) rank);
    return 0;
 }
