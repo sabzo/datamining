@@ -82,6 +82,12 @@ typedef struct rating {
   float score;
 } rating;
 
+// type for ranking function
+typedef void (*rank_t) (const void *heuristic, void *sub_result, void *result);
+
+// type for similarity function
+typedef void (*similarity_t) (void *result, void *this, const void *that, int len_that);
+
 // Searches for a value in specified array
 // TODO Better implementation would be to use a HASH but at moment not interested
 int in_rating_array(rating target, rating *ratings) {
@@ -198,7 +204,7 @@ char ** delim(char *str, char delim) {
   - elements are elements needing to be ranked.
 */
 
-void recommend(void *result, void *sub_result, void *this, const void *that, int len_that, const void *heuristic, void (*similarity)(void *result, void *this, const void *that, int len_that), void (*rank)(const void *heuristic, void *sub_result, void *result)) {
+void recommend(void *result, void *sub_result, void *this, const void *that, int len_that, const void *heuristic, similarity_t similarity, rank_t rank) {
   // Get similar items
   similarity(sub_result, this, that, len_that); 
   // rank results
