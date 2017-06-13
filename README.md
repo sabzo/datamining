@@ -7,12 +7,14 @@ Implement Datamining Algorithms described in [Guide to Data Mining] (http://guid
 ```c
   // Example for using Collaborative Filtering with Euclidean Distance
 
-  // 1. Compile 
-  gcc example2.c -o recommend -lm
+  // 1. Compile
+  gcc examples/collaborative_filtering/examp2.c -o recommend -lm
 
   // 2. recommend (can use ratings.csv in sample datafiles)
   ./recommend <ratings.csv>
 ```
+# Demo
+[![asciicast](https://asciinema.org/a/124606.png)](https://asciinema.org/a/124606)
 
 # References
  - [Guide to Data Mining] (http://guidetodatamining.com/)

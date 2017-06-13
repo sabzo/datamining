@@ -35,10 +35,6 @@ int rating_compare(const rating *r1, const rating *r2) {
 // args
   
 // Returns number of nearby users calculated as near
-
-
-typedef int (*fnptr_t) (int a, const char *b);
-
 int nearby_users(distance *ud, const user *u, user **users, int len) {
   int num_users = 0;
   int i = 0;
