@@ -1,7 +1,18 @@
 # Datamining in C
 ## Project to Implement Generic Datamining Algorithms
 
-Implement Datamining Exercises described in [Guide to Data Mining] (http://guidetodatamining.com) 
+Implement Datamining Algorithms described in [Guide to Data Mining] (http://guidetodatamining.com) and "Algorithms of the Intelligent Web" in C. 
+
+# Example 
+```c
+  // Example for using Collaborative Filtering with Euclidean Distance
+
+  // 1. Compile 
+  gcc example2.c -o recommend -lm
+
+  // 2. recommend (can use ratings.csv in sample datafiles)
+  ./recommend <ratings.csv>
+```
 
 # References
  - [Guide to Data Mining] (http://guidetodatamining.com/)

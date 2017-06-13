@@ -18,28 +18,67 @@ int distance_compare(distance *d1, distance *d2) {
     return 1;
 }
 
+/* Rating comparison function: greatest to lowest */
+int rating_compare(const rating *r1, const rating *r2) {
+  int eq;
+  if (r1->score == r2->score)
+    eq = 0;
+  else if (r1->score < r2->score)
+    eq = 1;
+  else 
+    return -1;
+}
+
+// TODO struct rec_args {
+// args
+  
 // Returns number of nearby users calculated as near
-int nearby_users(user *u, distance *users, int len) {
+
+
+typedef int (*fnptr_t) (int a, const char *b);
+
+int nearby_users(distance *ud, const user *u, user **users, int len) {
   int num_users = 0;
   int i = 0;
   int total = 0;
-  user **ttmp = _user_hash;
   // parse through users calculating distance
   while (i < HASHSIZE) {   
-    user *tmp = (*ttmp);
+    const user *tmp = (*users);
     while (tmp && tmp->key != NULL && total < len) { 
       distance d = {tmp->key, euclidean_distance(u->value, tmp->value)};
       if (d.distance) {
-        users[total++] = d;
+        ud[total++] = d;
         num_users++;
       }
       tmp = tmp->next;
     }
-    ttmp++;
+    users++;
     i++; 
   }
-  qsort(users, num_users, sizeof(distance), (int (*)(const void *, const void *)) distance_compare);
+  qsort(ud, num_users, sizeof(distance), (int (*)(const void *, const void *)) distance_compare);
+  
   return num_users;
+}
+
+// TODO array boundary check
+void rank (user *heuristic, distance *d, rating **results) {
+  user *u = _user_find(heuristic->key);
+  int i,j; 
+  // TODO: Sort closest user's ratings. Store time stamp of when last sorted. If timestamp fresh don't sort again
+  // As opposed to first find non-rated items, then sort non-rated items. 
+  // This sort (potentially on a sub array, which would make no sense) would happen each time
+  user *nu =  _user_find(d[0].key);
+  printf("Closest user is: %s\n", nu->key);
+  rating *r = nu->value;
+  qsort(r, nu->v_it, sizeof(rating), (int (*)(const void *, const void*)) rating_compare);  
+  // Compare ratings
+  for (i = 0, j = 0; i < MAXRECOMMENDATIONS && i < nu->v_it; i++) {
+    // TODO: Compare smaller array to bigger array
+     if (in_rating_array(*r, u->value) == -1) {
+       results[j++] = r; 
+    }
+    r++;
+  }
 }
 
 int main(int argc, char *argv[]) {
@@ -50,7 +89,9 @@ int main(int argc, char *argv[]) {
   char *uid = NULL; // user id 
   user *u;
   distance distances[MAXDISTANCES];
-  int total_distances;
+  int total_distances; 
+  rating *results[MAXRECOMMENDATIONS + 1] = {0}; 
+  int i = 0;
 
   if (argc < 2)
     usage(argv[0]);
@@ -91,13 +132,18 @@ int main(int argc, char *argv[]) {
        int i;
        for (i = 0; i < u->v_it; i++) {
          rating r = u->value[i];
-         printf("movie: %s, rating: %f\n", r.key, r.score);
        }
     }  
    
-   // Get nearby users
-    //int nearby_users(user *u, distance *users, int len) {
-   total_distances = nearby_users(u, distances, MAXDISTANCES);  
-   printf("total distances: %d\n", total_distances);  
+   recommend(results, distances, u, (const void *) _user_hash, MAXDISTANCES, (const void*) u, (void (*)(void *, void *, const void *, int)) nearby_users, (void (*)(const void *, void *, void*)) rank);
+
+  printf("\nRecommendations for user %s are:\n", u->key);
+  
+  while (results[i]) {
+    rating *r = results[i];
+    printf("%d. %s score: %f\n", i+1, r->key, r->score);
+    i++;
+}
+  
    return 0;
 }
