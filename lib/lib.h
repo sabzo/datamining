@@ -8,6 +8,7 @@
 #define MAXLINE 1000
 #define MAXDISTANCES 1000
 #define MAXLINEWORDS 20
+#define MAXRECOMMENDATIONS 25
 #define UIDSIZE 4
 // Create a Custom Hahs Type
 #define HASH(name, type_key, type_next, type_obj, size)  \
@@ -187,3 +188,20 @@ char ** delim(char *str, char delim) {
   words -= pos-1; // Note: this time *word didn't go off by 1 but pos is still off by 1, so subtract 1 to error correct
   return words;
 }
+
+/* Recommend 
+ ** Similarity()
+  - Finds similarity of this to that
+
+ ** Rank(heuristic, elements)
+  - heurist can be a function or an object
+  - elements are elements needing to be ranked.
+*/
+
+void recommend(void *result, void *sub_result, void *this, const void *that, int len_that, const void *heuristic, void (*similarity)(void *result, void *this, const void *that, int len_that), void (*rank)(const void *heuristic, void *sub_result, void *result)) {
+  // Get similar items
+  similarity(sub_result, this, that, len_that); 
+  // rank results
+  rank(heuristic, sub_result, result);
+}
+
