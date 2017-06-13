@@ -61,20 +61,21 @@ int nearby_users(distance *ud, const user *u, user **users, int len) {
 }
 
 // TODO array boundary check
-void rank (user *heuristic, distance *d, char **results) {
+void rank (user *heuristic, distance *d, rating **results) {
   user *u = _user_find(heuristic->key);
   int i,j; 
   // TODO: Sort closest user's ratings. Store time stamp of when last sorted. If timestamp fresh don't sort again
   // As opposed to first find non-rated items, then sort non-rated items. 
   // This sort (potentially on a sub array, which would make no sense) would happen each time
   user *nu =  _user_find(d[0].key);
+  printf("Closest user is: %s\n", nu->key);
   rating *r = nu->value;
   qsort(r, nu->v_it, sizeof(rating), (int (*)(const void *, const void*)) rating_compare);  
   // Compare ratings
   for (i = 0, j = 0; i < MAXRECOMMENDATIONS && i < nu->v_it; i++) {
     // TODO: Compare smaller array to bigger array
      if (in_rating_array(*r, u->value) == -1) {
-       results[j++] = r->key; 
+       results[j++] = r; 
     }
     r++;
   }
@@ -89,7 +90,7 @@ int main(int argc, char *argv[]) {
   user *u;
   distance distances[MAXDISTANCES];
   int total_distances; 
-  char *results[MAXRECOMMENDATIONS + 1] = {0}; 
+  rating *results[MAXRECOMMENDATIONS + 1] = {0}; 
   int i = 0;
 
   if (argc < 2)
@@ -139,7 +140,8 @@ int main(int argc, char *argv[]) {
   printf("\nRecommendations for user %s are:\n", u->key);
   
   while (results[i]) {
-    printf("%d. %s\n", i+1, results[i]);
+    rating *r = results[i];
+    printf("%d. %s score: %f\n", i+1, r->key, r->score);
     i++;
 }
   
