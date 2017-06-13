@@ -137,7 +137,7 @@ int main(int argc, char *argv[]) {
        }
     }  
    
-   recommend(results, distances, u, (const void *) _user_hash, MAXDISTANCES, (const void*) u, (void (*)(void *, void *, const void *, int)) nearby_users, (void (*)(const void *, void *, void*)) rank);
+   recommend(results, distances, u, (const void *) _user_hash, MAXDISTANCES, (const void*) u, (similarity_t) nearby_users, (rank_t) rank);
 
   printf("\nRecommendations for user %s are:\n", u->key);
   
