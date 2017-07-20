@@ -223,6 +223,7 @@ void load_data(char *filename, int line_length, int max_line_words, item_add add
      words++;
    }
    free (temp);
+   fclose(fp);
 }
 
 /* Recommend 
