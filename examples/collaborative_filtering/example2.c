@@ -81,8 +81,6 @@ void rank (user *heuristic, distance *d, rating **results) {
 
 int main(int argc, char *argv[]) {
 
-  FILE *fp;
-  char line[MAXLINE]; // each line
   char *filename; 
   char *uid = NULL; // user id 
   user *u;
@@ -99,24 +97,12 @@ int main(int argc, char *argv[]) {
 
    // Open ratings file
    filename = argv[1];
-   if ((fp = fopen (filename, "r")) == NULL) 
-     error("Unable to open file \n");
-
-   // Add/update user ratings
-   while (fgets(line, MAXLINE, fp) != NULL) {
-       char **words = delim(line, ','); 
-       char *uid = *words;
-       char *title = *(words + 1);
-       char *_rating = *(words + 2);
-       rating r = {title, atof(_rating)};
-       
-       // printf("User %s, title: %s, rating: %s\n", uid, title, _rating);
-       _user_add(uid, r);
-   }
+   load_data(filename, MAXLINE, 4, (item_add) _user_add); 
 
    // Allow user to choose a userID
    if (uid == NULL) {
      int i = 0;
+
      printf("Enter a user id to find ratings\n");
      uid = calloc(UIDSIZE + 1, sizeof(char)); // +1 for \0 
      while (i < UIDSIZE && (uid[i] = getc(stdin)) != '\n') 
@@ -133,7 +119,7 @@ int main(int argc, char *argv[]) {
        }
     }  
    
-   recommend(results, distances, u, (const void *) _user_hash, MAXDISTANCES, (const void*) u, (similarity_t) nearby_users, (rank_t) rank);
+   recommend(results, distances, u, _user_hash, MAXDISTANCES, (const void*) u, (similarity_t) nearby_users, (rank_t) rank);
 
   printf("\nRecommendations for user %s are:\n", u->key);
   
