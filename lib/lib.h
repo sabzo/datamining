@@ -155,7 +155,7 @@ int get_num_lines(char *filename) {
 }
 
 /* Returns an Array of words. Remember to Free Array after use */
-char ** delim(char *str, char delim) {
+char ** delim(char **words, char *str, char delim) {
   int num_words = 0;
   char char_counter = 0; // num of chars in word
   char wordsize[MAXLINEWORDS];
@@ -173,11 +173,11 @@ char ** delim(char *str, char delim) {
 	}
   }
   str -= str_ptr_offset;
-  // allocate words of words
-  char **words = calloc(num_words  + 1, sizeof(char *));
+
   // allocate for each word in list
   for (pos = 0; pos < num_words; pos++)
 	words[pos] = malloc(wordsize[pos] * sizeof(char *));
+
   char_counter = 0;
   while ((c = *str++) != '\0' && c != '\n') {
     if (c == delim) {
@@ -198,9 +198,9 @@ char ** delim(char *str, char delim) {
 }
 
 /* Load recommendation dataset */
-void load_data(char *filename, int line_length, item_add add) {
+void load_data(char *filename, int line_length, int max_line_words, item_add add) {
   FILE *fp;
-  char **words;
+  char **words = calloc(max_line_words + 1, sizeof(char *));
   char *line = malloc(line_length);
   
   // Open ratings file
@@ -209,7 +209,7 @@ void load_data(char *filename, int line_length, item_add add) {
 
    // Add/update user ratings
    while (fgets(line, line_length, fp) != NULL) {
-       words = delim(line, ','); 
+       delim(words, line, ','); 
        char *uid = *words;
        char *title = *(words + 1);
        char *_rating = *(words + 2);
@@ -217,7 +217,12 @@ void load_data(char *filename, int line_length, item_add add) {
        add(uid, r);
    }
    free(line);
-   free(words++);
+   char **temp = words;
+   while (*words) {
+       free(*words);
+     words++;
+   }
+   free (temp);
 }
 
 /* Recommend 

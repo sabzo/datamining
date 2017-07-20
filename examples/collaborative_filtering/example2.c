@@ -97,7 +97,7 @@ int main(int argc, char *argv[]) {
 
    // Open ratings file
    filename = argv[1];
-   load_data(filename, MAXLINE, (item_add) _user_add); 
+   load_data(filename, MAXLINE, 4, (item_add) _user_add); 
 
    // Allow user to choose a userID
    if (uid == NULL) {
